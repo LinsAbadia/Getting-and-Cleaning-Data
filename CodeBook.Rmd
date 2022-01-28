@@ -1,0 +1,36 @@
+---
+title: "CodeBook"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The run_analysis.R script follows the 5 steps outlined by the course brief:
+
+1.	Merges the training and the test sets to create one data set.
+•	The zip file was downloaded and decompressed,
+•	6 files resulted into 3 data frames from combing the train and test sets:
+  -  X.  7,352 rows by 561 columns, and 2,947 rows by 561 columns respectively.  Combined to yield 10,299         rows by 561 columns,
+   - Y.  7352 rows by 1 column, and 2947 rows by 1 column respectively.  Combined to yield 10,299 rows by 1        column, and
+  -    Subject. 7352 rows by 1 column, and 2947 rows by 1 column respectively. Combined to yield 10,299 rows by 1 column.   
+
+        •	All 3, however, don’t have column names.  For X, “features.txt” was used.  As there was some                correspondence with the ‘codes’ in Y and the ‘labels’ in “activity_label.txt”), the column was named         “activity” considering the file.  As the ‘combined Subject’ DF had values of 1 to 30 (representing
+        the study participants), the field was called “subject” to indicate this.
+
+2.	Extracts only the measurements on the mean and standard deviation for each measurement.
+  
+          •	The dataset was formed by combining the Subject (10,299 x 1), Y (10,299 x 1), and the subset of the X data frame where column names had either the words mean (10,299 x 46) or std (10,299 x 33).  The result was 10,299 rows by 81 columns.  
+
+3.	Uses descriptive activity names to name the activities in the data set
+  
+       •	The ‘numbers’ in the “activity” column of the merged dataset were substituted for ‘descriptive words’ for readability.
+
+4.	Appropriately labels the data set with descriptive variable names.
+  
+       •	The ‘esoteric’ portions of the column names from X were replaced for readability (e.g., to fully spell out words like “Accelerometer” for “Acc”,  ‘English-like translations’ of mathematical functions such as “sma()” to “SimpleMagnitudeArea”, remove ‘confusing’ punctuation like “’,” for Autoregression Coefficients, expansion of Cartesian Coordinates with a ‘-coordinate’ suffix, aid correlation readability by inserting “ and “ in the middle of variables, and address observed inconsistencies through visual inspection like repeated words such as BodyBody).  All in all, 23 ‘matches’ were defined using regular expressions.
+
+5.	From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+  
+       •	‘Piping’ was used to finalise and generate the ‘tidy’ dataset. The *dplyr* package was loaded to make use of the functions: *group_by* to categorise according to ‘subject’ and each ‘activity’, *arrange* to sort the dataset and ensure they were ‘clustered’ consistently according to the specified grouping, and *summarise_all* to compute the averages requested.  “TidyData.txt” has the following dimensions:  180 (30 subjects and 6 different activities) rows by 81 (1 ‘subject’ + 1 ‘activity’ + 46 ‘means’ + 33 ‘standard deviations’) columns.
